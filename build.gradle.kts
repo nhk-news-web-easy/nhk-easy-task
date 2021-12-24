@@ -16,9 +16,15 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("io.sentry:sentry-logback:5.5.2")
+	implementation("mysql:mysql-connector-java:8.0.27")
+	implementation("org.jsoup:jsoup:1.14.3")
+	implementation("com.squareup.okhttp3:okhttp:4.9.3")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
+	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
