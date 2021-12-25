@@ -1,5 +1,6 @@
 package nhk.service
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -118,7 +119,7 @@ open class NewsService {
             objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
             objectMapper.registerModule(javaTimeModule)
 
-            return objectMapper.readValue(it, Typere)
+            return objectMapper.readValue(it, object : TypeReference<List<TopNewsDto>>() {})
         }
 
         return emptyList()
