@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
-open class NewsService {
+class NewsService {
     private val logger: Logger = LoggerFactory.getLogger(NewsService::class.java)
 
     @Autowired
@@ -42,7 +42,7 @@ open class NewsService {
     private lateinit var newsWordRepository: NewsWordRepository
 
     @Transactional
-    open fun fetchAndSaveTopNews() {
+    fun fetchAndSaveTopNews() {
         val topNews = getTopNews()
             .filter { news ->
                 newsRepository.findByTitle(news.title).isEmpty()
