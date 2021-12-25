@@ -39,7 +39,7 @@ class NewsServiceTest : BaseTest() {
         val news = newsParser.parseNews(topNews[0])
 
         assertNotNull(news)
-        assertTrue(news.words.isNotEmpty())
+        news?.words?.let { assertTrue(it.isNotEmpty()) }
     }
 
     @Test
