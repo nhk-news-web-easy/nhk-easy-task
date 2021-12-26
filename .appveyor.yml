@@ -6,6 +6,7 @@ services:
 before_build:
   - set PATH=%PATH%;C:\Program Files\MySql\MySQL Server 5.7\bin
   - mysql -e "create database nhk_test;" --user=root
+  - mysql -e "ALTER DATABASE nhk_test CHARACTER SET utf8 COLLATE utf8_general_ci;" --user=root
 build_script:
   - mvn compile
 before_test:
