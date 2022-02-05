@@ -3,6 +3,7 @@ package nhk
 import nhk.repository.NewsRepository
 import nhk.repository.WordDefinitionRepository
 import nhk.repository.WordRepository
+import nhk.service.NewsFetcher
 import nhk.service.NewsParser
 import nhk.service.NewsService
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -11,6 +12,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class NewsServiceTest : BaseTest() {
+    @Autowired
+    private lateinit var newsFetcher: NewsFetcher
+
+    @Autowired
+    private lateinit var newsParser: NewsParser
+
     @Autowired
     private lateinit var newsService: NewsService
 
@@ -23,19 +30,16 @@ class NewsServiceTest : BaseTest() {
     @Autowired
     private lateinit var wordDefinitionRepository: WordDefinitionRepository
 
-    @Autowired
-    private lateinit var newsParser: NewsParser
-
     @Test
     fun shouldGetTopNews() {
-        val topNews = newsService.getTopNews()
+        val topNews = newsFetcher.getTopNews()
 
         assertTrue(topNews.isNotEmpty())
     }
 
     @Test
     fun shouldParseNewsAndWords() {
-        val topNews = newsService.getTopNews()
+        val topNews = newsFetcher.getTopNews()
         val news = newsParser.parseNews(topNews[0])
 
         assertNotNull(news)
@@ -44,7 +48,12 @@ class NewsServiceTest : BaseTest() {
 
     @Test
     fun shouldSaveTopNews() {
-        newsService.fetchAndSaveTopNews()
+        val topNews = newsFetcher.getTopNews()
+        val parsedNews = topNews.mapNotNull { news ->
+            newsParser.parseNews(news)
+        }
+
+        newsService.saveAll(parsedNews)
 
         val allNews = newsRepository.findAll()
         val allWords = wordRepository.findAll()
