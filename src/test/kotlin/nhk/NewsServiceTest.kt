@@ -6,7 +6,6 @@ import nhk.repository.WordRepository
 import nhk.service.NewsFetcher
 import nhk.service.NewsParser
 import nhk.service.NewsService
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,22 +28,6 @@ class NewsServiceTest : BaseTest() {
 
     @Autowired
     private lateinit var wordDefinitionRepository: WordDefinitionRepository
-
-    @Test
-    fun shouldGetTopNews() {
-        val topNews = newsFetcher.getTopNews()
-
-        assertTrue(topNews.isNotEmpty())
-    }
-
-    @Test
-    fun shouldParseNewsAndWords() {
-        val topNews = newsFetcher.getTopNews()
-        val news = newsParser.parseNews(topNews[0])
-
-        assertNotNull(news)
-        news?.words?.let { assertTrue(it.isNotEmpty()) }
-    }
 
     @Test
     fun shouldSaveTopNews() {
