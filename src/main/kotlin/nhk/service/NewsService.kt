@@ -60,7 +60,7 @@ class NewsService {
             word.id == 0
         }
 
-        wordRepository.saveAll(words)
+        wordRepository.saveAll(newWords)
 
         newWords.forEach { word ->
             val definitions = word.definitions
