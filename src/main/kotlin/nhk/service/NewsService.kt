@@ -31,7 +31,7 @@ class NewsService {
     @Transactional
     fun saveAll(newsList: List<News>) {
         val latestNews = newsList.filter {
-            newsRepository.findByTitle(it.title).isEmpty()
+            newsRepository.findFirstByTitle(it.title) == null
         }
 
         if (latestNews.isEmpty()) {
@@ -45,12 +45,11 @@ class NewsService {
         }.distinctBy { word ->
             word.name
         }.map { word ->
-            val currentWords = wordRepository.findByName(word.name)
+            val currentWord = wordRepository.findFirstByName(word.name)
 
-            if (currentWords.isEmpty()) {
+            if (currentWord == null) {
                 word
             } else {
-                val currentWord = currentWords.first()
                 currentWord.definitions = word.definitions
 
                 currentWord
