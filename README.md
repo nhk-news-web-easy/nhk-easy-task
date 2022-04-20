@@ -1,4 +1,4 @@
-# nhk-easy-task
+# nhk-easy-task [![Java CI with Maven](https://github.com/nhk-news-web-easy/nhk-easy-task/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nhk-news-web-easy/nhk-easy-task/actions/workflows/build.yml)
 
 Daily task to fetch and parse news from [NEWS WEB EASY](https://www3.nhk.or.jp/news/easy/), the task runs at 10:00 AM (UTC) every day.
 
