@@ -7,7 +7,6 @@ Daily task to fetch and parse news from [NEWS WEB EASY](https://www3.nhk.or.jp/n
 docker run -e MYSQL_HOST=ip-address-of-mysql \
   -e MYSQL_USER=your-mysql-user \
   -e MYSQL_PASSWORD=your-mysql-user-password \
-  -e SENTRY_DSN=sentry-dsn \
   -d xiaodanmao/nhk-easy-task
 ```
 
