@@ -11,4 +11,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 sentry:
-  dsn: ${SENTRY_DSN}
+  dsn: ${SENTRY_DSN:dsn}
