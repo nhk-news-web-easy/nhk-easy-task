@@ -1,7 +1,7 @@
 package nhk.service
 
-import nhk.entity.News
-import nhk.entity.NewsWord
+import io.github.io.github.nhk_news_web_easy.News
+import io.github.io.github.nhk_news_web_easy.NewsWord
 import nhk.repository.NewsRepository
 import nhk.repository.NewsWordRepository
 import nhk.repository.WordDefinitionRepository

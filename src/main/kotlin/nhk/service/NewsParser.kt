@@ -2,10 +2,10 @@ package nhk.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.io.github.nhk_news_web_easy.News
+import io.github.io.github.nhk_news_web_easy.Word
+import io.github.io.github.nhk_news_web_easy.WordDefinition
 import nhk.dto.TopNewsDto
-import nhk.entity.News
-import nhk.entity.Word
-import nhk.entity.WordDefinition
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
