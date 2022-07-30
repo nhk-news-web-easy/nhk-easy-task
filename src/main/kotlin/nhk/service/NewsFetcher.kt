@@ -21,6 +21,11 @@ class NewsFetcher {
             .url(Constants.TOP_NEWS_URL)
             .build()
         val response = okHttpClient.newCall(request).execute()
+
+        if (response.code != 200) {
+            return emptyList()
+        }
+
         val json = response.body?.string()
 
         json?.let {

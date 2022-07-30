@@ -1,5 +1,8 @@
 package nhk.task
 
+import io.github.io.github.nhk_news_web_easy.News
+import nhk.dto.TopNewsDto
+import nhk.sentry.SentryReporter
 import nhk.service.NewsFetcher
 import nhk.service.NewsParser
 import nhk.service.NewsService
@@ -23,17 +26,47 @@ class NewsDailyTask {
     @Autowired
     private lateinit var newsService: NewsService
 
+    @Autowired
+    private lateinit var sentryReporter: SentryReporter
+
     @Scheduled(cron = "0 0 10 * * *", zone = "UTC")
     fun saveTopNews() {
         logger.info("Start to fetch news, now={}", ZonedDateTime.now())
 
-        val topNews = newsFetcher.getTopNews()
-        val parsedNews = topNews.mapNotNull { news ->
-            newsParser.parseNews(news)
+        var topNews = emptyList<TopNewsDto>()
+
+        try {
+            topNews = newsFetcher.getTopNews()
+        } catch (e: Throwable) {
+            sentryReporter.captureException(e)
         }
 
-        if (parsedNews.isNotEmpty()) {
+        if (topNews.isEmpty()) {
+            sentryReporter.captureException(Exception("topNews are empty"))
+
+            return
+        }
+
+        var parsedNews = emptyList<News>()
+
+        try {
+            parsedNews = topNews.mapNotNull { news ->
+                newsParser.parseNews(news)
+            }
+        } catch (e: Throwable) {
+            sentryReporter.captureException(e)
+        }
+
+        if (parsedNews.isEmpty()) {
+            sentryReporter.captureException(Exception("parsedNews are empty"))
+
+            return
+        }
+
+        try {
             newsService.saveAll(parsedNews)
+        } catch (e: Throwable) {
+            sentryReporter.captureException(e)
         }
     }
 }
