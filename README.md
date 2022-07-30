@@ -12,5 +12,15 @@ docker run -e MYSQL_HOST=ip-address-of-mysql \
   -d xiaodanmao/nhk-easy-task
 ```
 
+Or run with Sentry enabled:
+
+```sh
+docker run -e MYSQL_HOST=ip-address-of-mysql \
+  -e MYSQL_USER=your-mysql-user \
+  -e MYSQL_PASSWORD=your-mysql-user-password \
+  -e SENTRY_DSN=your-sentry-dsn \
+  -d xiaodanmao/nhk-easy-task
+```
+
 ## License
 [MIT](LICENSE)
