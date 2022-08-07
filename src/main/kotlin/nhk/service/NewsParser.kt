@@ -43,6 +43,7 @@ class NewsParser {
         news.outlineWithRuby = cleanUpOutline(topNews.outlineWithRuby)
         news.url = url
         news.body = body.html()
+        news.bodyWithoutRuby = trimRuby(news.body)
         news.imageUrl = when (topNews.hasNewsWebImage) {
             true -> topNews.newsWebImageUri
             false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
@@ -124,6 +125,17 @@ class NewsParser {
 
         // Jsoup wraps html/body around outline,
         // so we get body first and return its inner html
+        return document.select("body").html()
+    }
+
+    private fun trimRuby(body: String): String {
+        val document = Jsoup.parse(body)
+        val rubies = document.select("ruby")
+
+        rubies.forEach { ruby ->
+            ruby.select("rt").remove()
+        }
+
         return document.select("body").html()
     }
 }
