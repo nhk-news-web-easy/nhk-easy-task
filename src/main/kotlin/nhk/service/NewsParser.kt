@@ -48,7 +48,7 @@ class NewsParser {
             true -> topNews.newsWebImageUri
             false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
         }
-        news.m3u8Url = "https://nhks-vh.akamaihd.net/i/news/easy/${topNews.newsEasyVoiceUri}/master.m3u8"
+        news.m3u8Url = "https://vod-stream.nhk.jp/news/easy/${topNews.newsId}/index.m3u8"
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
         news.words = parseWords(newsId)
 
