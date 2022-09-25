@@ -8,7 +8,9 @@ import io.github.io.github.nhk_news_web_easy.WordDefinition
 import nhk.dto.TopNewsDto
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.apache.commons.lang3.StringUtils
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -40,10 +42,11 @@ class NewsParser {
         news.newsId = newsId
         news.title = topNews.title
         news.titleWithRuby = topNews.titleWithRuby
-        news.outlineWithRuby = cleanUpOutline(topNews.outlineWithRuby)
+        news.outline = extractAsText(topNews.outlineWithRuby)
+        news.outlineWithRuby = removeLink(topNews.outlineWithRuby)
         news.url = url
         news.body = body.html()
-        news.bodyWithoutRuby = trimRuby(news.body)
+        news.bodyWithoutRuby = getBodyAsText(body)
         news.imageUrl = when (topNews.hasNewsWebImage) {
             true -> topNews.newsWebImageUri
             false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
@@ -93,7 +96,7 @@ class NewsParser {
                     .map { node ->
                         val wordDefinition = WordDefinition()
                         wordDefinition.definitionWithRuby = node.get("def").asText()
-                        wordDefinition.definition = this.extractWordDefinition(wordDefinition.definitionWithRuby)
+                        wordDefinition.definition = this.extractAsText(wordDefinition.definitionWithRuby)
 
                         wordDefinition
                     }
@@ -105,8 +108,13 @@ class NewsParser {
             }
     }
 
-    private fun extractWordDefinition(definitionWithRuby: String): String {
-        val document = Jsoup.parse(definitionWithRuby)
+    private fun extractAsText(html: String): String {
+        val document = Jsoup.parse(html)
+
+        return extractAsText(document)
+    }
+
+    private fun extractAsText(document: Element): String {
         val rubies = document.select("ruby")
 
         rubies.forEach { ruby ->
@@ -116,7 +124,7 @@ class NewsParser {
         return document.text()
     }
 
-    private fun cleanUpOutline(outline: String): String {
+    private fun removeLink(outline: String): String {
         val document = Jsoup.parse(outline)
         val links = document.select("a")
         links.forEach { link ->
@@ -128,14 +136,13 @@ class NewsParser {
         return document.select("body").html()
     }
 
-    private fun trimRuby(body: String): String {
-        val document = Jsoup.parse(body)
-        val rubies = document.select("ruby")
+    private fun getBodyAsText(body: Element): String {
+        val lines = body.children()
+            .map {
+                return extractAsText(it)
+            }
+            .filter { StringUtils.isNotBlank(it) }
 
-        rubies.forEach { ruby ->
-            ruby.select("rt").remove()
-        }
-
-        return document.select("body").html()
+        return lines.joinToString("\n")
     }
 }
