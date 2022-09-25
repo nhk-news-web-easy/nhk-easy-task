@@ -139,7 +139,7 @@ class NewsParser {
     private fun getBodyAsText(body: Element): String {
         val lines = body.children()
             .map {
-                return extractAsText(it)
+                extractAsText(it)
             }
             .filter { StringUtils.isNotBlank(it) }
 
