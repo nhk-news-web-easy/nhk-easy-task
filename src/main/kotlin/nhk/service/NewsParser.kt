@@ -46,7 +46,7 @@ class NewsParser {
         news.outlineWithRuby = removeLink(topNews.outlineWithRuby)
         news.url = url
         news.body = body.html()
-        news.bodyWithoutRuby = getBodyAsText(body)
+        news.bodyWithoutHtml = getBodyAsText(body)
         news.imageUrl = when (topNews.hasNewsWebImage) {
             true -> topNews.newsWebImageUri
             false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
