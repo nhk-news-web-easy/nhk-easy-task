@@ -3,7 +3,7 @@
 Daily task to fetch and parse news from [NEWS WEB EASY](https://www3.nhk.or.jp/news/easy/), the task runs at 10:00 AM (UTC) every day.
 
 ## Getting started
-Create a MySQL database called `nhk`, then run:
+Create a MySQL database called `nhk` and import table structures from [init.sql](https://github.com/nhk-news-web-easy/nhk-easy-entity/blob/main/db/init.sql), then run:
 
 ```sh
 docker run -e MYSQL_HOST=ip-address-of-mysql \
