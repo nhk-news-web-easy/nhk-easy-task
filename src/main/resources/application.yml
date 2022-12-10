@@ -12,3 +12,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 sentry:
   dsn: ${SENTRY_DSN}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+    enabled-by-default: true
