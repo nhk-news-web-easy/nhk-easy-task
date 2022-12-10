@@ -9,6 +9,7 @@ Create a MySQL database called `nhk` and import table structures from [init.sql]
 docker run -e MYSQL_HOST=ip-address-of-mysql \
   -e MYSQL_USER=your-mysql-user \
   -e MYSQL_PASSWORD=your-mysql-user-password \
+  -p 8080:8080 \
   -d xiaodanmao/nhk-easy-task
 ```
 
@@ -19,6 +20,7 @@ docker run -e MYSQL_HOST=ip-address-of-mysql \
   -e MYSQL_USER=your-mysql-user \
   -e MYSQL_PASSWORD=your-mysql-user-password \
   -e SENTRY_DSN=your-sentry-dsn \
+  -p 8080:8080 \
   -d xiaodanmao/nhk-easy-task
 ```
 
