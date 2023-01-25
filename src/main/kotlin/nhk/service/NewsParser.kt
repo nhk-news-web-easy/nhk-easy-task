@@ -30,7 +30,7 @@ class NewsParser {
         if (body == null) {
             logger.error("Failed to parse news with id {} and url {}", newsId, url)
 
-            return null
+            throw RuntimeException("Failed to parse news, js-article-body is null")
         }
 
         val links = body.select("a")
@@ -62,9 +62,14 @@ class NewsParser {
         val url = "https://www3.nhk.or.jp/news/easy/$newsId/$newsId.out.dic"
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
-            .url(url)
-            .build()
+                .url(url)
+                .build()
         val response = okHttpClient.newCall(request).execute()
+
+        if (response.code != 200) {
+            throw RuntimeException("Failed to get words for news ${newsId}, statusCode=${response.code}")
+        }
+
         val json = response.body?.string()
 
         json?.let {
@@ -74,38 +79,38 @@ class NewsParser {
             val entries = reikai.get("entries")
 
             return entries.fields()
-                .asSequence()
-                .flatMap { entry ->
-                    parseWord(entry).asSequence()
-                }.toMutableSet()
+                    .asSequence()
+                    .flatMap { entry ->
+                        parseWord(entry).asSequence()
+                    }.toMutableSet()
         }
 
-        return mutableSetOf()
+        throw RuntimeException("words are empty")
     }
 
     private fun parseWord(entry: Map.Entry<String, JsonNode>): List<Word> {
         return entry.value.toList()
-            .groupBy { node -> node.get("hyouki")[0].asText() }
-            .entries
-            .map { keyValue ->
-                val word = Word()
-                word.name = keyValue.key
-                word.idInNews = entry.key
+                .groupBy { node -> node.get("hyouki")[0].asText() }
+                .entries
+                .map { keyValue ->
+                    val word = Word()
+                    word.name = keyValue.key
+                    word.idInNews = entry.key
 
-                val wordDefinitions = keyValue.value
-                    .map { node ->
-                        val wordDefinition = WordDefinition()
-                        wordDefinition.definitionWithRuby = node.get("def").asText()
-                        wordDefinition.definition = this.extractAsText(wordDefinition.definitionWithRuby)
+                    val wordDefinitions = keyValue.value
+                            .map { node ->
+                                val wordDefinition = WordDefinition()
+                                wordDefinition.definitionWithRuby = node.get("def").asText()
+                                wordDefinition.definition = this.extractAsText(wordDefinition.definitionWithRuby)
 
-                        wordDefinition
-                    }
-                    .toMutableList()
+                                wordDefinition
+                            }
+                            .toMutableList()
 
-                word.definitions = wordDefinitions
+                    word.definitions = wordDefinitions
 
-                word
-            }
+                    word
+                }
     }
 
     private fun extractAsText(html: String): String {
@@ -138,10 +143,10 @@ class NewsParser {
 
     private fun getBodyAsText(body: Element): String {
         val lines = body.children()
-            .map {
-                extractAsText(it)
-            }
-            .filter { StringUtils.isNotBlank(it) }
+                .map {
+                    extractAsText(it)
+                }
+                .filter { StringUtils.isNotBlank(it) }
 
         return lines.joinToString("\n")
     }

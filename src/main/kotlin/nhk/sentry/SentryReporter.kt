@@ -31,6 +31,8 @@ class SentryReporter {
             }
 
             this.initialized = true
+
+            logger.info("sentry initialized")
         } catch (e: Exception) {
             logger.error("Failed to init sentry with dsn {}", sentryConfig.dsn, e)
         }

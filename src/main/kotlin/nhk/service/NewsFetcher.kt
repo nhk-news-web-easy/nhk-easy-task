@@ -18,12 +18,12 @@ class NewsFetcher {
     fun getTopNews(): List<TopNewsDto> {
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
-            .url(Constants.TOP_NEWS_URL)
-            .build()
+                .url(Constants.TOP_NEWS_URL)
+                .build()
         val response = okHttpClient.newCall(request).execute()
 
         if (response.code != 200) {
-            return emptyList()
+            throw RuntimeException("Failed to get top news, statusCode=${response.code}")
         }
 
         val json = response.body?.string()
@@ -31,7 +31,7 @@ class NewsFetcher {
         json?.let {
             val javaTimeModule = JavaTimeModule()
             val localDateTimeDeserializer =
-                LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(Constants.NHK_NEWS_EASY_DATE_FORMAT))
+                    LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(Constants.NHK_NEWS_EASY_DATE_FORMAT))
             javaTimeModule.addDeserializer(LocalDateTime::class.java, localDateTimeDeserializer)
 
             val objectMapper = ObjectMapper()
@@ -41,6 +41,6 @@ class NewsFetcher {
             return objectMapper.readValue(it, object : TypeReference<List<TopNewsDto>>() {})
         }
 
-        return emptyList()
+        throw RuntimeException("top news are empty")
     }
 }
