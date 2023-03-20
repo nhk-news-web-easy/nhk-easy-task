@@ -51,7 +51,7 @@ class NewsParser {
             true -> topNews.newsWebImageUri
             false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
         }
-        news.m3u8Url = "https://vod-stream.nhk.jp/news/easy/${topNews.newsId}/index.m3u8"
+        news.m3u8Url = parseAudioUrl(topNews)
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
         news.words = parseWords(newsId)
 
@@ -149,5 +149,9 @@ class NewsParser {
                 .filter { StringUtils.isNotBlank(it) }
 
         return lines.joinToString("\n")
+    }
+
+    private fun parseAudioUrl(topNewsDto: TopNewsDto): String {
+        return "https://vod-stream.nhk.jp/news/easy_audio/${topNewsDto.newsEasyVoiceUri.split(".")[0]}/index.m3u8"
     }
 }
