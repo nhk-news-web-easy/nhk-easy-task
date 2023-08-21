@@ -38,10 +38,14 @@ class NewsDailyTask {
         try {
             topNews = newsFetcher.getTopNews()
         } catch (e: Throwable) {
+            logger.error("Failed to get top news", e)
+
             sentryReporter.captureException(e)
         }
 
         if (topNews.isEmpty()) {
+            logger.error("Top news are empty")
+
             sentryReporter.captureException(Exception("topNews are empty"))
 
             return
@@ -54,10 +58,14 @@ class NewsDailyTask {
                 newsParser.parseNews(news)
             }
         } catch (e: Throwable) {
+            logger.error("Failed to parse top news", e)
+
             sentryReporter.captureException(e)
         }
 
         if (parsedNews.isEmpty()) {
+            logger.error("Parsed news are empty")
+
             sentryReporter.captureException(Exception("parsedNews are empty"))
 
             return
@@ -66,6 +74,8 @@ class NewsDailyTask {
         try {
             newsService.saveAll(parsedNews)
         } catch (e: Throwable) {
+            logger.error("Failed to save parsed news", e)
+
             sentryReporter.captureException(e)
         }
     }
