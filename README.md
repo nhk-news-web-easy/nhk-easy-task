@@ -24,7 +24,8 @@ docker run -e MYSQL_HOST=ip-address-of-mysql \
   -d xiaodanmao/nhk-easy-task
 ```
 
-Fetch news manually:
+## API
+### Fetch news manually
 
 ```
 curl --request POST \
