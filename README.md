@@ -25,8 +25,7 @@ docker run -e MYSQL_HOST=ip-address-of-mysql \
 ```
 
 ## API
-### Fetch news manually
-
+### Fetch news
 ```
 curl --request POST \
   --url http://localhost:8080/fetchNews
