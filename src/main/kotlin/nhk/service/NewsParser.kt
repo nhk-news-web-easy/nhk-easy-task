@@ -67,7 +67,9 @@ class NewsParser {
         val response = okHttpClient.newCall(request).execute()
 
         if (response.code != 200) {
-            throw RuntimeException("Failed to get words for news ${newsId}, statusCode=${response.code}")
+            logger.warn("Failed to get words for news ${newsId}, statusCode=${response.code}")
+
+            return mutableSetOf()
         }
 
         val json = response.body?.string()
@@ -85,7 +87,9 @@ class NewsParser {
                     }.toMutableSet()
         }
 
-        throw RuntimeException("words are empty")
+        logger.warn("words are empty, news id is $newsId")
+
+        return mutableSetOf()
     }
 
     private fun parseWord(entry: Map.Entry<String, JsonNode>): List<Word> {
