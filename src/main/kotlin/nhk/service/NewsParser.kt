@@ -53,7 +53,7 @@ class NewsParser {
         }
         news.m3u8Url = parseAudioUrl(topNews)
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
-        news.words = parseWords(newsId)
+        // news.words = parseWords(newsId)
 
         return news
     }
