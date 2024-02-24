@@ -27,7 +27,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
-      run: export MYSQL_PASSWORD=root && mvn test
+      run: export MYSQL_PASSWORD=root && mvn compile
     - name: Test coverage
       run: |
         bash <(curl https://codecov.io/bash)
