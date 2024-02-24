@@ -94,7 +94,7 @@ class NewsParser {
                     }.toMutableSet()
         }
 
-        throw RuntimeException("words are empty for news $newsId")
+        return mutableSetOf()
     }
 
     private fun parseWord(entry: Map.Entry<String, JsonNode>): List<Word> {
