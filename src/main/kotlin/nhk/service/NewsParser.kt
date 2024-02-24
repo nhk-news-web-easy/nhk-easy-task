@@ -53,7 +53,14 @@ class NewsParser {
         }
         news.m3u8Url = parseAudioUrl(topNews)
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
-        news.words = parseWords(newsId)
+
+        try {
+            news.words = parseWords(newsId)
+        } catch (e: Exception) {
+            logger.error("Failed to parse words for news $newsId", e)
+
+            news.words = mutableSetOf()
+        }
 
         return news
     }
@@ -67,6 +74,8 @@ class NewsParser {
         val response = okHttpClient.newCall(request).execute()
 
         if (response.code != 200) {
+            response.close()
+
             throw RuntimeException("Failed to get words for news ${newsId}, statusCode=${response.code}")
         }
 
@@ -85,7 +94,7 @@ class NewsParser {
                     }.toMutableSet()
         }
 
-        throw RuntimeException("words are empty")
+        throw RuntimeException("words are empty for news $newsId")
     }
 
     private fun parseWord(entry: Map.Entry<String, JsonNode>): List<Word> {
