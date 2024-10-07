@@ -29,7 +29,7 @@ class NewsDailyTask {
     @Autowired
     private lateinit var sentryReporter: SentryReporter
 
-    @Scheduled(cron = "0 0 10 * * *", zone = "UTC")
+    @Scheduled(cron = "0 0 * * * *", zone = "UTC")
     fun saveTopNews() {
         logger.info("Start to fetch news, now={}", ZonedDateTime.now())
 
