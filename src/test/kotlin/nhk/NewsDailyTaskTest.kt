@@ -1,21 +1,21 @@
 package nhk
 
 import nhk.repository.NewsRepository
-import nhk.task.NewsDailyTask
+import nhk.task.NewsTask
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class NewsDailyTaskTest : BaseTest() {
     @Autowired
-    private lateinit var newsDailyTask: NewsDailyTask
+    private lateinit var newsTask: NewsTask
 
     @Autowired
     private lateinit var newsRepository: NewsRepository
 
     @Test
     fun shouldGetDailyNews() {
-        newsDailyTask.saveTopNews()
+        newsTask.saveTopNews()
 
         val allNews = newsRepository.findAll()
 
