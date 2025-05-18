@@ -9,13 +9,12 @@ import nhk.service.NewsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 
 @Component
-class NewsDailyTask {
-    private val logger: Logger = LoggerFactory.getLogger(NewsDailyTask::class.java)
+class NewsTask {
+    private val logger: Logger = LoggerFactory.getLogger(NewsTask::class.java)
 
     @Autowired
     private lateinit var newsFetcher: NewsFetcher
@@ -29,7 +28,6 @@ class NewsDailyTask {
     @Autowired
     private lateinit var sentryReporter: SentryReporter
 
-    @Scheduled(cron = "0 0 * * * *", zone = "UTC")
     fun saveTopNews() {
         logger.info("Start to fetch news, now={}", ZonedDateTime.now())
 

@@ -3,7 +3,7 @@ package nhk.controller
 import nhk.service.NewsFetcher
 import nhk.service.NewsParser
 import nhk.service.NewsService
-import nhk.task.NewsDailyTask
+import nhk.task.NewsTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import java.time.ZonedDateTime
 
 @RestController
 class TaskController {
-    private val logger: Logger = LoggerFactory.getLogger(NewsDailyTask::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(NewsTask::class.java)
 
     @Autowired
     private lateinit var newsFetcher: NewsFetcher
