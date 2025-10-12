@@ -64,7 +64,9 @@ class NewsParser {
         news.url = url
         news.body = body.html()
         news.bodyWithoutHtml = getBodyAsText(body)
-        news.imageUrl = topNews.newsEasyImageUri
+        news.imageUrl = topNews.newsEasyImageUri.ifBlank {
+            topNews.newsWebImageUri
+        }
         news.m3u8Url = parseAudioUrl(topNews)
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
         news.words = mutableSetOf()
