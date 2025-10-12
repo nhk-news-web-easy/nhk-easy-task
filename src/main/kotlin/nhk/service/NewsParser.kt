@@ -6,9 +6,9 @@ import io.github.io.github.nhk_news_web_easy.News
 import io.github.io.github.nhk_news_web_easy.Word
 import io.github.io.github.nhk_news_web_easy.WordDefinition
 import nhk.dto.TopNewsDto
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.apache.commons.lang3.StringUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.slf4j.Logger
@@ -21,10 +21,27 @@ import java.time.ZonedDateTime
 class NewsParser {
     private val logger: Logger = LoggerFactory.getLogger(NewsParser::class.java)
 
+    @Autowired
+    private lateinit var httpClient: AuthenticatedHttpClient
+
     fun parseNews(topNews: TopNewsDto): News? {
         val newsId = topNews.newsId
-        val url = "https://www3.nhk.or.jp/news/easy/$newsId/$newsId.html"
-        val document = Jsoup.connect(url).get()
+        val url = "https://news.web.nhk/news/easy/$newsId/$newsId.html"
+
+        // Fetch HTML with authenticated client
+        val client = httpClient.getClient()
+        val request = Request.Builder()
+                .url(url)
+                .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0")
+                .build()
+        val response = client.newCall(request).execute()
+
+        if (response.code != 200) {
+            throw RuntimeException("Failed to fetch news article, statusCode=${response.code}")
+        }
+
+        val html = response.body?.string() ?: throw RuntimeException("Empty response body")
+        val document = Jsoup.parse(html)
         val body = document.getElementById("js-article-body")
 
         if (body == null) {
@@ -47,31 +64,24 @@ class NewsParser {
         news.url = url
         news.body = body.html()
         news.bodyWithoutHtml = getBodyAsText(body)
-        news.imageUrl = when (topNews.hasNewsWebImage) {
-            true -> topNews.newsWebImageUri
-            false -> "https://www3.nhk.or.jp/news/easy/${topNews.newsId}/${topNews.newsEasyImageUri}"
+        news.imageUrl = topNews.newsEasyImageUri.ifBlank {
+            topNews.newsWebImageUri
         }
         news.m3u8Url = parseAudioUrl(topNews)
         news.publishedAtUtc = ZonedDateTime.of(topNews.newsPrearrangedTime, ZoneId.of("+9")).toInstant()
-
-        try {
-            news.words = parseWords(newsId)
-        } catch (e: Exception) {
-            logger.error("Failed to parse words for news $newsId", e)
-
-            news.words = mutableSetOf()
-        }
+        news.words = mutableSetOf()
 
         return news
     }
 
     private fun parseWords(newsId: String): MutableSet<Word> {
         val url = "https://www3.nhk.or.jp/news/easy/$newsId/$newsId.out.dic"
-        val okHttpClient = OkHttpClient()
+        val client = httpClient.getClient()
         val request = Request.Builder()
                 .url(url)
+                .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0")
                 .build()
-        val response = okHttpClient.newCall(request).execute()
+        val response = client.newCall(request).execute()
 
         if (response.code != 200) {
             response.close()
